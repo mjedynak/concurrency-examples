@@ -12,7 +12,11 @@ public class Cheater {
         synchronized(resource) {
             System.out.println("I'm blocking resource");
             while(true) {
-                
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
