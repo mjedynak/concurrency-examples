@@ -18,7 +18,6 @@ public class SynchronizedConsumer {
     }
 
     private void takeFromQueue() {
-
         synchronized (queue) {
             if (!queue.isEmpty()) {
                 System.out.println(queue.remove());
