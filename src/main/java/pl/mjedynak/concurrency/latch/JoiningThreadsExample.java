@@ -22,7 +22,5 @@ public class JoiningThreadsExample {
         thread2.join();
 
         System.out.println("Both threads finished computing.");
-
     }
-    
 }
