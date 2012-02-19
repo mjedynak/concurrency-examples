@@ -27,6 +27,7 @@ public class CountdownLatchExample {
         executorService.submit(runnable);
 
         latch.await();
+        executorService.shutdown();
 
         System.out.println("Both threads finished computing.");
     }
