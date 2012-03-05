@@ -16,6 +16,7 @@ public class ReadWriteLockExample {
     public void showInfoAboutBook() {
         try {
             readWriteLock.readLock().lock();
+            System.out.println("Reading book info from thread " + Thread.currentThread().getName());
             System.out.println(book);
         } finally {
             readWriteLock.readLock().unlock();
@@ -25,7 +26,9 @@ public class ReadWriteLockExample {
     public void setNumberOfPages(int pages) {
         try {
             readWriteLock.writeLock().lock();
+            System.out.println("Setting book property from thread " +Thread.currentThread().getName());
             book.setPages(pages);
+            System.out.println("New value for book has been set");
         } finally {
             readWriteLock.writeLock().unlock();
         }
@@ -33,11 +36,10 @@ public class ReadWriteLockExample {
 
     public static void main(String[] args) {
         final ReadWriteLockExample example = new ReadWriteLockExample();
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+        ExecutorService executor = Executors.newFixedThreadPool(10);
         Runnable readTask = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Reading book info from thread " + Thread.currentThread().getName());
                 example.showInfoAboutBook();
             }
         };
@@ -45,15 +47,16 @@ public class ReadWriteLockExample {
         Runnable writeTask = new Runnable() {
             @Override
             public void run() {
-                System.out.println("Setting book property from thread " +Thread.currentThread().getName());
                 example.setNumberOfPages(301);
             }
         };
 
         for (int i = 0; i < 100; i++) {
             executor.submit(readTask);
+            if (i==50) {
+                executor.submit(writeTask);
+            }
         }
-        executor.submit(writeTask);
         executor.shutdown();
 
     }
