@@ -29,4 +29,33 @@ public class Book {
     public int hashCode() {
         return Objects.hash(author, title, pages);
     }
+
+    @Override
+    public String toString() {
+        return "Book {author = " + Objects.toString(author) + ", title = " + Objects.toString(title) + ", pages = " + Objects.toString(pages) + "}";
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getPages() {
+        return pages;
+    }
+
+    public void setPages(int pages) {
+        this.pages = pages;
+    }
 }
