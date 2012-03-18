@@ -30,6 +30,22 @@
             <artifactId>junit</artifactId>
             <version>4.10</version>
         </dependency>
+        <dependency>
+            <groupId>edu.umd.cs.mtc</groupId>
+            <artifactId>multithreadedtc</artifactId>
+            <version>1.01</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+
 
     </dependencies>
 
