@@ -39,7 +39,7 @@ public class StringCounterTest {
     }
 
     class MyMultithreadedTest extends MultithreadedTestCase {
-        StringCounter stringCounter;
+        private StringCounter stringCounter;
         private String someString = "someString";
 
         @Override
