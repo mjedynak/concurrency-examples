@@ -3,7 +3,7 @@ package pl.mjedynak.concurrency.future;
 public class FutureExampleRunner {
 
     public static void main(String[] args) throws Exception {
-        BuyerWithoutFuture buyerWithoutFuture = new BuyerWithoutFuture();
+        Buyer buyerWithoutFuture = new Buyer();
         buyerWithoutFuture.buyProduct();
 
         BuyerWithFuture buyerWithFuture = new BuyerWithFuture();

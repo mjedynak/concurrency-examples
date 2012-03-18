@@ -2,7 +2,7 @@ package pl.mjedynak.concurrency.future;
 
 import java.util.Random;
 
-public class BuyerWithoutFuture {
+public class Buyer {
     private PriceChecker priceChecker = new PriceChecker();
     private Double price;
 
