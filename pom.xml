@@ -31,6 +31,11 @@
             <version>4.11</version>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
+        </dependency>
+        <dependency>
             <groupId>edu.umd.cs.mtc</groupId>
             <artifactId>multithreadedtc</artifactId>
             <version>1.01</version>
@@ -42,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+            <artifactId>spring-core</artifactId>
             <version>3.2.6.RELEASE</version>
         </dependency>
         <dependency>
@@ -50,8 +55,6 @@
             <artifactId>spring-test</artifactId>
             <version>3.2.6.RELEASE</version>
         </dependency>
-
-
     </dependencies>
 
     <properties>
