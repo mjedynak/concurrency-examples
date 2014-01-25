@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,6 +30,8 @@ import static pl.mjedynak.concurrency.guava.Service.VALUE;
 public class CacheExample {
 
     private static final long CACHE_SIZE = 2;
+    private static final int MULTIPLE_FACTOR = 10;
+    private static final int THREADS_NUMBER = MULTIPLE_FACTOR;
     private static final String KEY = "key1";
 
     @Spy private Service service;
@@ -76,13 +79,42 @@ public class CacheExample {
     @Test
     public void shouldCopeWithManyThreads() throws Exception {
         // given
-        int nThreads = 10;
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        ExecutorService executorService = Executors.newFixedThreadPool(THREADS_NUMBER);
         List<Future<String>> results = new ArrayList<>();
 
+        // when
+        hitCacheWithMultipleThreads(executorService, results);
+
+        // then
+        for (Future<String> result : results) {
+            assertThat(result.get(), is(VALUE));
+        }
+        assertThat(results, hasSize(THREADS_NUMBER * MULTIPLE_FACTOR));
+        verify(service, times(1)).getData(KEY);
+    }
+
+    @Test
+    public void shouldCopeWithManyThreadsWithEviction() throws Exception {
+        // given
+        ExecutorService executorService = Executors.newFixedThreadPool(THREADS_NUMBER);
+        List<Future<String>> results = new ArrayList<>();
 
         // when
-        for (int i = 0; i < nThreads * 10; i++) {
+        hitCacheWithMultipleThreads(executorService, results);
+        Thread.sleep(4 * SERVICE_PROCESSING_TIME);
+        hitCacheWithMultipleThreads(executorService, results);
+
+        // then
+        for (Future<String> result : results) {
+            assertThat(result.get(), is(VALUE));
+        }
+        assertThat(results, hasSize(2 * THREADS_NUMBER * MULTIPLE_FACTOR));
+        assertThat(cache.stats().evictionCount(), is(1L));
+        verify(service, times(2)).getData(KEY);
+    }
+
+    private void hitCacheWithMultipleThreads(ExecutorService executorService, List<Future<String>> results) {
+        for (int i = 0; i < THREADS_NUMBER * MULTIPLE_FACTOR; i++) {
             Future<String> future = executorService.submit(new Callable<String>() {
                 @Override
                 public String call() throws Exception {
@@ -91,13 +123,8 @@ public class CacheExample {
             });
             results.add(future);
         }
-
-        // then
-        for (Future<String> result : results) {
-            assertThat(result.get(), is(VALUE));
-        }
-        verify(service, times(1)).getData(KEY);
     }
+
 }
 
 
@@ -110,6 +137,7 @@ class Service {
         try {
             Thread.sleep(SERVICE_PROCESSING_TIME);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return VALUE;
     }
