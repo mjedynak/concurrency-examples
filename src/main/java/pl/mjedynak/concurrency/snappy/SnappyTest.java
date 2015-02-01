@@ -3,7 +3,6 @@ package pl.mjedynak.concurrency.snappy;
 import org.junit.Test;
 import org.xerial.snappy.Snappy;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -26,13 +25,9 @@ public class SnappyTest {
         List<String> inputData = generateInputData();
         List<Callable<String>> tasks = newArrayList();
         range(0, N_TASKS).forEach(i -> tasks.add(() -> {
-            try {
                 byte[] compressed = Snappy.compress(inputData.get(i));
                 byte[] uncompressed = Snappy.uncompress(compressed);
                 return new String(uncompressed);
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
         }));
         ExecutorService executorService = newFixedThreadPool(N_THREADS);
         // when
