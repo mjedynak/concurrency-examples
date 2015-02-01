@@ -1,7 +1,6 @@
-package pl.mjedynak.concurrency.snappy;
+package pl.mjedynak.concurrency.threadSafety;
 
 import org.junit.Test;
-import org.xerial.snappy.Snappy;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,20 +13,24 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SnappyTest {
-    private final static int MULTIPLIER = 1000;
+public class ThreadSafetyTest {
+    private final static int MULTIPLIER = 5000;
     private final static int N_THREADS = 100;
     private final static int N_TASKS = N_THREADS * MULTIPLIER;
+
+    private Compressor compressor = new SnappyCompressor();
+//    private Compressor compressor = new ThreadSafeCompressor();
+//    private Compressor compressor = new NotThreadSafeCompressor();
 
     @Test
     public void shouldBeThreadSafe() throws Exception {
         // given
         List<String> inputData = generateInputData();
         List<Callable<String>> tasks = newArrayList();
-        range(0, N_TASKS).forEach(i -> tasks.add(() -> {
-                byte[] compressed = Snappy.compress(inputData.get(i));
-                byte[] uncompressed = Snappy.uncompress(compressed);
-                return new String(uncompressed);
+        range(0, N_TASKS).forEach(i -> tasks.add(
+                () -> {
+            byte[] compressed = compressor.compress(inputData.get(i));
+            return compressor.decompress(compressed);
         }));
         ExecutorService executorService = newFixedThreadPool(N_THREADS);
         // when
